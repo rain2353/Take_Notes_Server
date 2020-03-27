@@ -86,13 +86,13 @@ app.post('/register/', (req, res, next) => {
     var uid = uuid.v4(); // Get UUID v4 like '110abacsasas-af0x-90333-casasjkajksk
     var plaint_password = post_data.password; // Get password from post params
     var hash_data = saltHashPassword(plaint_password);
-    var password = hash_data.passwordHash; // Get hash value
+    var password = hash_data.passwordHash; // Get hash value   
     var salt = hash_data.salt; // Get salt
     var today = new Date();
-    var name = post_data.name;
-    var email = post_data.email;
-    var phone_number = post_data.phone_number;
-    var nickname = post_data.nickname;
+    var name = post_data.name;     // 사용자 이름
+    var email = post_data.email;   // 사용자 Email
+    var phone_number = post_data.phone_number;  // 사용자 휴대전화 번호
+    var nickname = post_data.nickname;  // 사용자 별명
     var user = {
         "unique_id": uid,
         "email": email,
@@ -157,7 +157,7 @@ app.post('/login/', (req, res, next) => {
             var hashed_password = checkHashPassword(user_password, salt).passwordHash;
             if (encrypted_password == hashed_password)
 
-                res.end("로그인 성공" + JSON.stringify(result[0])) // If password is true , return all info of user
+                res.end(JSON.stringify(result[0])) // If password is true , return all info of user
             else
                 res.end(JSON.stringify(' 잘못된 비밀번호 입니다. '));
         }
@@ -168,3 +168,52 @@ app.post('/login/', (req, res, next) => {
 
 })
 // ----------------------------------------------------------로그인------------------------------------------------------------------
+// ----------------------------------------------------------메모 작성------------------------------------------------------------------
+app.post('/writeMemo/',(req,res,next) => {
+
+    var post_data = req.body; // Get POST params
+    let email = post_data.email; // 메모 작성자 Email
+    let title = post_data.title; // 메모 제목
+    let content = post_data.content; // 메모 내용
+    let newDate = new Date();
+    var week = new Array('일','월','화','수','목','금','토');
+    let time = newDate.toFormat('YYYY년 MM월 DD일 ')+ week[newDate.getDay()] + '요일 '+ newDate.toFormat('HH:MI:SS');
+    
+    
+    var sql = 'INSERT INTO memolist (email, title, content, created_at, updated_at) VALUES(?, ?, ?, ?, ?)';
+    con.query(sql,[email,title,content,time,time], function (error, result, fields) {
+        if (error) {
+            console.log("error ocurred", error);
+            res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        } else {
+            console.log('The solution is: ', result);
+            res.send({
+                "code": 200,
+                "success": "메모를 작성하였습니다.",
+            })
+            
+        }
+    })
+});
+// ----------------------------------------------------------메모 작성------------------------------------------------------------------
+// ----------------------------------------------------------작성한 메모 리스트------------------------------------------------------------------
+app.get("/MemoList/:email",(req,res,next)=>{
+    var email = req.params.email;
+    con.query('SELECT * FROM memolist where email=?',[email],function(error,result,fields){
+        con.on('error',function(err){
+            console.log('[MY SQL ERROR]',err);
+        });
+
+        if(result && result.length){
+            
+                res.end(JSON.stringify(result));
+                console.log(result);
+            
+        } else {
+        }
+    })
+});
+// ----------------------------------------------------------작성한 메모 리스트------------------------------------------------------------------
