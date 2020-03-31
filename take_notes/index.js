@@ -217,3 +217,61 @@ app.get("/MemoList/:email",(req,res,next)=>{
     })
 });
 // ----------------------------------------------------------작성한 메모 리스트------------------------------------------------------------------
+// ----------------------------------------------------------메모 수정------------------------------------------------------------------
+app.post('/ChangeMemo/',(req,res,next) => {
+
+    var post_data = req.body; // Get POST params
+    let num = post_data.num; // DB에 저장된 게시글 번호.
+    let email = post_data.email; // 메모 작성자 Email
+    let title = post_data.title; // 메모 제목
+    let content = post_data.content; // 메모 내용
+    let created_at = post_data.created_at; // 메모 작성일
+    let newDate = new Date();
+    var week = new Array('일','월','화','수','목','금','토');
+    let Updated_time = newDate.toFormat('YYYY년 MM월 DD일 ')+ week[newDate.getDay()] + '요일 '+ newDate.toFormat('HH:MI:SS');
+    
+   
+    var sql = 'UPDATE memolist SET email=?,title=?,content=?,created_at=?,updated_at=? WHERE num=?';
+    con.query(sql,[email,title,content,created_at,Updated_time,num], function (error, result, fields) {
+        if (error) {
+            console.log("error ocurred", error);
+            res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        } else {
+            console.log('The solution is: ', result);
+            res.send({
+                "code": 200,
+                "success": "메모를 수정하였습니다.",
+            })
+            
+        }
+    })
+});
+// ----------------------------------------------------------메모 작성------------------------------------------------------------------
+// ----------------------------------------------------------메모 삭제------------------------------------------------------------------
+app.post('/DeleteMemo/',(req,res,next) => {
+
+    var num = req.body.num;
+   
+     
+     var sql = 'DELETE FROM memolist where num=?';
+     con.query(sql,[num], function (error, result, fields) {
+         if (error) {
+             console.log("error ocurred", error);
+             res.send({
+                 "code": 400,
+                 "failed": "error ocurred"
+             })
+         } else {
+             console.log('The solution is: ', result);
+             res.send({
+                 "code": 200,
+                 "success": "메모를 삭제하였습니다.",
+             })
+             
+         }
+     })
+ });
+ // ----------------------------------------------------------메모 삭제------------------------------------------------------------------
