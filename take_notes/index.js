@@ -275,3 +275,124 @@ app.post('/DeleteMemo/',(req,res,next) => {
      })
  });
  // ----------------------------------------------------------메모 삭제------------------------------------------------------------------
+
+  // --------------------------------------------------------- 사진 업로드 ---------------------------------------------------------------
+
+app.post('/ImageUpload/',upload.array('files'),(req,res,next) => {
+    console.log(req.files);
+    console.log(req.body);
+    let file = "empty";
+    let file1 = "empty";
+    let file2 = "empty";
+    let file3 = "empty";
+    let file4 = "empty";
+    let file5 = "empty";
+    let file6 = "empty";
+    let file7 = "empty";
+    let file8 = "empty";
+    let file9 = "empty";
+    for(var i = 0; i<req.files.length; i++){
+        switch(i){
+            case 0:
+                file = req.files[0].filename;
+                break;
+            case 1:
+                file1 = req.files[1].filename;
+                break;
+            case 2:
+                file2 = req.files[2].filename;
+                break;
+            case 3:
+                file3 = req.files[3].filename;
+                break;
+            case 4:
+                file4 = req.files[4].filename;
+                break;
+            case 5:
+                file5 = req.files[5].filename;
+                break;
+            case 6:
+                file6 = req.files[6].filename;
+                break;
+            case 7:
+                file7 = req.files[7].filename;
+                break;
+            case 8:
+                file8 = req.files[8].filename;
+                break;
+            case 9:
+                file9 = req.files[9].filename;
+                break;
+        }
+    }
+    
+    let email = req.body.email;
+    let title = req.body.title; 
+    let content = req.body.content; 
+    let newDate = new Date();
+    var week = new Array('일','월','화','수','목','금','토');
+    let created_time = newDate.toFormat('YYYY년 MM월 DD일 ')+ week[newDate.getDay()] + '요일 '+ newDate.toFormat('HH:MI:SS');
+    
+   
+    var sql = 'INSERT INTO images (email, title, content, file, file1, file2, file3, file4, file5, file6, file7, file8, file9, created_at, updated_at) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    con.query(sql,[email, title, content, file,file1,file2,file3,file4,file5,file6,file7,file8,file9,created_time,created_time], function (error, result, fields) {
+        if (error) {
+            console.log("error ocurred", error);
+            res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        } else {
+            console.log('The solution is: ', result);
+            res.send({
+                "code": 200,
+                "success": "사진을 업로드하였습니다.",
+            })
+            
+        }
+    });
+});
+  // --------------------------------------------------------- 사진 업로드 ---------------------------------------------------------------
+  // ---------------------------------------------------------- 업로드한 사진 리스트------------------------------------------------------------------
+app.get("/ImageList/:email",(req,res,next)=>{
+    var email = req.params.email;
+    con.query('SELECT * FROM images where email=?',[email],function(error,result,fields){
+        con.on('error',function(err){
+            console.log('[MY SQL ERROR]',err);
+        });
+
+        if(result && result.length){
+            
+                res.end(JSON.stringify(result));
+                console.log(result);
+            
+        } else {
+        }
+    })
+});
+// ---------------------------------------------------------- 업로드한 사진 리스트------------------------------------------------------------------
+// ---------------------------------------------------------- 사진 삭제------------------------------------------------------------------
+app.post('/DeletePicture/',(req,res,next) => {
+
+    var num = req.body.num;
+   
+     
+     var sql = 'DELETE FROM images where num=?';
+     con.query(sql,[num], function (error, result, fields) {
+         if (error) {
+             console.log("error ocurred", error);
+             res.send({
+                 "code": 400,
+                 "failed": "error ocurred"
+             })
+         } else {
+             console.log('The solution is: ', result);
+             res.send({
+                 "code": 200,
+                 "success": "업로드한 사진을 삭제하였습니다.",
+             })
+             
+         }
+     })
+ });
+ // ---------------------------------------------------------- 사진 삭제------------------------------------------------------------------
