@@ -396,3 +396,36 @@ app.post('/DeletePicture/',(req,res,next) => {
      })
  });
  // ---------------------------------------------------------- 사진 삭제------------------------------------------------------------------
+// --------------------------------------------------------- 동영상 업로드 ---------------------------------------------------------------
+
+app.post('/VideoUpload/',upload.single('video'),(req,res,next) => {
+    console.log(req.file);
+    console.log(req.body);
+    let video = req.file.filename;
+    let email = req.body.email;
+    let title = req.body.title; 
+    let content = req.body.content; 
+    let newDate = new Date();
+    var week = new Array('일','월','화','수','목','금','토');
+    let created_time = newDate.toFormat('YYYY년 MM월 DD일 ')+ week[newDate.getDay()] + '요일 '+ newDate.toFormat('HH:MI:SS');
+    
+   
+    var sql = 'INSERT INTO video (email, title, content, video, created_at, updated_at) VALUES( ?, ?, ?, ?, ?, ?)';
+    con.query(sql,[email, title, content, video, created_time, created_time], function (error, result, fields) {
+        if (error) {
+            console.log("error ocurred", error);
+            res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        } else {
+            console.log('The solution is: ', result);
+            res.send({
+                "code": 200,
+                "success": "동영상을 업로드하였습니다.",
+            })
+            
+        }
+    });
+});
+// --------------------------------------------------------- 동영상 업로드 ---------------------------------------------------------------
