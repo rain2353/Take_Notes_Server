@@ -429,3 +429,21 @@ app.post('/VideoUpload/',upload.single('video'),(req,res,next) => {
     });
 });
 // --------------------------------------------------------- 동영상 업로드 ---------------------------------------------------------------
+  // ---------------------------------------------------------- 업로드한 동영상 리스트------------------------------------------------------------------
+  app.get("/VideoList/:email",(req,res,next)=>{
+    var email = req.params.email;
+    con.query('SELECT * FROM video where email=?',[email],function(error,result,fields){
+        con.on('error',function(err){
+            console.log('[MY SQL ERROR]',err);
+        });
+
+        if(result && result.length){
+            
+                res.end(JSON.stringify(result));
+                console.log(result);
+            
+        } else {
+        }
+    })
+});
+// ---------------------------------------------------------- 업로드한 동영상 리스트------------------------------------------------------------------
