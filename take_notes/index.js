@@ -447,3 +447,62 @@ app.post('/VideoUpload/',upload.single('video'),(req,res,next) => {
     })
 });
 // ---------------------------------------------------------- 업로드한 동영상 리스트------------------------------------------------------------------
+// ---------------------------------------------------------- 업로드한 동영상 수정하기------------------------------------------------------------------
+app.post('/VideoModify/',upload.single("video"),(req,res,next) => {
+
+    let num = req.body.num;
+    let video = req.file.filename;
+    let email = req.body.email;
+    let title = req.body.title; 
+    let content = req.body.content; 
+    let created_at = req.body.created_at;
+    let newDate = new Date();
+    var week = new Array('일','월','화','수','목','금','토');
+    let updated_time = newDate.toFormat('YYYY년 MM월 DD일 ')+ week[newDate.getDay()] + '요일 '+ newDate.toFormat('HH:MI:SS');
+
+   
+    
+    var sql = 'UPDATE video SET email = ?, title = ?, content = ?, video = ?, created_at = ?, updated_at = ? WHERE num = ?';
+    con.query(sql,[ email, title, content, video, created_at, updated_time, num], function (error, result, fields) {
+        if (error) {
+            console.log("error ocurred", error);
+            res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        } else {
+            console.log('The solution is: ', result);
+            res.send({
+                "code": 200,
+                "success": "동영상을 수정하였습니다.",
+            })
+            
+        }
+    })
+});
+// ----------------------------------------------------------- 업로드한 동영상 수정하기------------------------------------------------------------------
+// ----------------------------------------------------------- 업로드한 동영상 삭제------------------------------------------------------------------
+app.post('/DeleteVideo/',(req,res,next) => {
+
+    var num = req.body.num;
+   
+     
+     var sql = 'DELETE FROM video where num=?';
+     con.query(sql,[num], function (error, result, fields) {
+         if (error) {
+             console.log("error ocurred", error);
+             res.send({
+                 "code": 400,
+                 "failed": "error ocurred"
+             })
+         } else {
+             console.log('The solution is: ', result);
+             res.send({
+                 "code": 200,
+                 "success": "업로드한 동영상을 삭제하였습니다.",
+             })
+             
+         }
+     })
+ });
+ // ---------------------------------------------------------- 업로드한 동영상 삭제------------------------------------------------------------------
