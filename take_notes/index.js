@@ -79,7 +79,8 @@ for (var k in interfaces) {
 }
 console.log("Take_Notes 현재 서버주소 : " + addresses + ":" + port2);
 
-// ----------------------------------------------------------회원가입------------------------------------------------------------------
+
+// ---------------------------------------------------------- 회원가입------------------------------------------------------------------
 app.post('/register/', (req, res, next) => {
 
     var post_data = req.body; // Get POST params
@@ -134,8 +135,8 @@ app.post('/register/', (req, res, next) => {
     });
 
 })
-// ----------------------------------------------------------회원가입------------------------------------------------------------------
-// ----------------------------------------------------------로그인------------------------------------------------------------------
+// ---------------------------------------------------------- 회원가입------------------------------------------------------------------
+// ---------------------------------------------------------- 로그인------------------------------------------------------------------
 app.post('/login/', (req, res, next) => {
     var post_data = req.body;
 
@@ -167,8 +168,8 @@ app.post('/login/', (req, res, next) => {
     });
 
 })
-// ----------------------------------------------------------로그인------------------------------------------------------------------
-// ----------------------------------------------------------메모 작성------------------------------------------------------------------
+// ---------------------------------------------------------- 로그인------------------------------------------------------------------
+// ---------------------------------------------------------- 메모 작성------------------------------------------------------------------
 app.post('/writeMemo/',(req,res,next) => {
 
     var post_data = req.body; // Get POST params
@@ -198,8 +199,8 @@ app.post('/writeMemo/',(req,res,next) => {
         }
     })
 });
-// ----------------------------------------------------------메모 작성------------------------------------------------------------------
-// ----------------------------------------------------------작성한 메모 리스트------------------------------------------------------------------
+// ---------------------------------------------------------- 메모 작성------------------------------------------------------------------
+// ---------------------------------------------------------- 작성한 메모 리스트------------------------------------------------------------------
 app.get("/MemoList/:email",(req,res,next)=>{
     var email = req.params.email;
     con.query('SELECT * FROM memolist where email=?',[email],function(error,result,fields){
@@ -210,14 +211,15 @@ app.get("/MemoList/:email",(req,res,next)=>{
         if(result && result.length){
             
                 res.end(JSON.stringify(result));
-                console.log(result);
+            
             
         } else {
         }
     })
 });
-// ----------------------------------------------------------작성한 메모 리스트------------------------------------------------------------------
-// ----------------------------------------------------------메모 수정------------------------------------------------------------------
+// ---------------------------------------------------------- 작성한 메모 리스트------------------------------------------------------------------
+
+// ---------------------------------------------------------- 메모 수정------------------------------------------------------------------
 app.post('/ChangeMemo/',(req,res,next) => {
 
     var post_data = req.body; // Get POST params
@@ -249,8 +251,8 @@ app.post('/ChangeMemo/',(req,res,next) => {
         }
     })
 });
-// ----------------------------------------------------------메모 작성------------------------------------------------------------------
-// ----------------------------------------------------------메모 삭제------------------------------------------------------------------
+// ---------------------------------------------------------- 메모 작성------------------------------------------------------------------
+// ---------------------------------------------------------- 메모 삭제------------------------------------------------------------------
 app.post('/DeleteMemo/',(req,res,next) => {
 
     var num = req.body.num;
@@ -274,7 +276,7 @@ app.post('/DeleteMemo/',(req,res,next) => {
          }
      })
  });
- // ----------------------------------------------------------메모 삭제------------------------------------------------------------------
+ // ---------------------------------------------------------- 메모 삭제------------------------------------------------------------------
 
   // --------------------------------------------------------- 사진 업로드 ---------------------------------------------------------------
 
@@ -371,6 +373,129 @@ app.get("/ImageList/:email",(req,res,next)=>{
     })
 });
 // ---------------------------------------------------------- 업로드한 사진 리스트------------------------------------------------------------------
+  // --------------------------------------------------------- 사진 수정 ---------------------------------------------------------------
+
+  app.post('/ImageModify/',upload.array('files'),(req,res,next) => {
+    console.log(req.files);
+    console.log(req.body);
+    let file = "empty";
+    let file1 = "empty";
+    let file2 = "empty";
+    let file3 = "empty";
+    let file4 = "empty";
+    let file5 = "empty";
+    let file6 = "empty";
+    let file7 = "empty";
+    let file8 = "empty";
+    let file9 = "empty";
+    for(var i = 0; i<req.files.length; i++){
+        switch(i){
+            case 0:
+                file = req.files[0].filename;
+                break;
+            case 1:
+                file1 = req.files[1].filename;
+                break;
+            case 2:
+                file2 = req.files[2].filename;
+                break;
+            case 3:
+                file3 = req.files[3].filename;
+                break;
+            case 4:
+                file4 = req.files[4].filename;
+                break;
+            case 5:
+                file5 = req.files[5].filename;
+                break;
+            case 6:
+                file6 = req.files[6].filename;
+                break;
+            case 7:
+                file7 = req.files[7].filename;
+                break;
+            case 8:
+                file8 = req.files[8].filename;
+                break;
+            case 9:
+                file9 = req.files[9].filename;
+                break;
+        } 
+    }
+    let num = req.body.num;
+    let email = req.body.email;
+    let title = req.body.title; 
+    let content = req.body.content; 
+    let created_at = req.body.created_at;
+    let newDate = new Date();
+    var week = new Array('일','월','화','수','목','금','토');
+    let updated_time = newDate.toFormat('YYYY년 MM월 DD일 ')+ week[newDate.getDay()] + '요일 '+ newDate.toFormat('HH:MI:SS');
+    
+   
+    var sql = 'UPDATE images SET email = ?, title = ?, content = ?, file = ?, file1 = ?, file2 = ?, file3 = ?, file4 = ?, file5 = ?, file6 = ?, file7 = ?, file8 = ?, file9 = ?, created_at = ?, updated_at = ? WHERE num = ?';
+    con.query(sql,[email, title, content, file,file1,file2,file3,file4,file5,file6,file7,file8,file9,created_at,updated_time,num], function (error, result, fields) {
+        if (error) {
+            console.log("error ocurred", error);
+            res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        } else {
+            console.log('The solution is: ', result);
+            res.send({
+                "code": 200,
+                "success": "사진을 수정하였습니다.",
+            })
+            
+        }
+    });
+});
+
+  // --------------------------------------------------------- 사진 수정 ---------------------------------------------------------------
+   // --------------------------------------------------------- 사진 텍스트만 수정 ---------------------------------------------------------------
+
+   app.post('/ImageTextModify/',(req,res,next) => {
+    console.log(req.body);
+    let file = req.body.file;
+    let file1 = req.body.file1;
+    let file2 = req.body.file2;
+    let file3 = req.body.file3;
+    let file4 = req.body.file4;
+    let file5 = req.body.file5;
+    let file6 = req.body.file6;
+    let file7 = req.body.file7;
+    let file8 = req.body.file8;
+    let file9 = req.body.file9;
+    let num = req.body.num;
+    let email = req.body.email;
+    let title = req.body.title; 
+    let content = req.body.content; 
+    let created_at = req.body.created_at;
+    let newDate = new Date();
+    var week = new Array('일','월','화','수','목','금','토');
+    let updated_time = newDate.toFormat('YYYY년 MM월 DD일 ')+ week[newDate.getDay()] + '요일 '+ newDate.toFormat('HH:MI:SS');
+    
+   
+    var sql = 'UPDATE images SET email = ?, title = ?, content = ?, file = ?, file1 = ?, file2 = ?, file3 = ?, file4 = ?, file5 = ?, file6 = ?, file7 = ?, file8 = ?, file9 = ?, created_at = ?, updated_at = ? WHERE num = ?';
+    con.query(sql,[email, title, content, file,file1,file2,file3,file4,file5,file6,file7,file8,file9,created_at,updated_time,num], function (error, result, fields) {
+        if (error) {
+            console.log("error ocurred", error);
+            res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        } else {
+            console.log('The solution is: ', result);
+            res.send({
+                "code": 200,
+                "success": "사진을 수정하였습니다.",
+            })
+            
+        }
+    });
+});
+
+  // --------------------------------------------------------- 사진 텍스트만 수정 ---------------------------------------------------------------
 // ---------------------------------------------------------- 사진 삭제------------------------------------------------------------------
 app.post('/DeletePicture/',(req,res,next) => {
 
@@ -429,7 +554,8 @@ app.post('/VideoUpload/',upload.single('video'),(req,res,next) => {
     });
 });
 // --------------------------------------------------------- 동영상 업로드 ---------------------------------------------------------------
-  // ---------------------------------------------------------- 업로드한 동영상 리스트------------------------------------------------------------------
+
+// ---------------------------------------------------------- 업로드한 동영상 리스트------------------------------------------------------------------
   app.get("/VideoList/:email",(req,res,next)=>{
     var email = req.params.email;
     con.query('SELECT * FROM video where email=?',[email],function(error,result,fields){
@@ -481,6 +607,40 @@ app.post('/VideoModify/',upload.single("video"),(req,res,next) => {
     })
 });
 // ----------------------------------------------------------- 업로드한 동영상 수정하기------------------------------------------------------------------
+// ---------------------------------------------------------- 동영상 텍스트 수정------------------------------------------------------------------
+app.post('/VideoTextModify/',(req,res,next) => {
+
+    var post_data = req.body; // Get POST params
+    let num = post_data.num; // DB에 저장된 게시글 번호.
+    let email = post_data.email; // 동영상 작성자 Email
+    let title = post_data.title; // 동영상 제목
+    let content = post_data.content; // 동영상 내용
+    let video = post_data.video;  // 동영상 제목
+    let created_at = post_data.created_at; // 동영상 작성일
+    let newDate = new Date();
+    var week = new Array('일','월','화','수','목','금','토');
+    let Updated_time = newDate.toFormat('YYYY년 MM월 DD일 ')+ week[newDate.getDay()] + '요일 '+ newDate.toFormat('HH:MI:SS');
+    
+   
+    var sql = 'UPDATE video SET email = ?,title = ?,content = ?,video = ?,created_at = ?,updated_at = ? WHERE num = ?';
+    con.query(sql,[email,title,content,video,created_at,Updated_time,num], function (error, result, fields) {
+        if (error) {
+            console.log("error ocurred", error);
+            res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        } else {
+            console.log('The solution is: ', result);
+            res.send({
+                "code": 200,
+                "success": "수정하였습니다.",
+            })
+            
+        }
+    })
+});
+// ---------------------------------------------------------- 동영상 텍스트 수정------------------------------------------------------------------
 // ----------------------------------------------------------- 업로드한 동영상 삭제------------------------------------------------------------------
 app.post('/DeleteVideo/',(req,res,next) => {
 
@@ -506,3 +666,148 @@ app.post('/DeleteVideo/',(req,res,next) => {
      })
  });
  // ---------------------------------------------------------- 업로드한 동영상 삭제------------------------------------------------------------------
+
+ // --------------------------------------------------------- 녹음한 파일 업로드 ---------------------------------------------------------------
+
+app.post('/VoiceUpload/',upload.single('audio'),(req,res,next) => {
+    console.log(req.file);
+    console.log(req.body);
+    let audio = req.file.filename;
+    let email = req.body.email;
+    let title = req.body.title; 
+    let content = req.body.content; 
+    let newDate = new Date();
+    var week = new Array('일','월','화','수','목','금','토');
+    let created_time = newDate.toFormat('YYYY년 MM월 DD일 ')+ week[newDate.getDay()] + '요일 '+ newDate.toFormat('HH:MI:SS');
+    
+   
+    var sql = 'INSERT INTO audio (email, title, content, audio, created_at, updated_at) VALUES( ?, ?, ?, ?, ?, ?)';
+    con.query(sql,[email, title, content, audio, created_time, created_time], function (error, result, fields) {
+        if (error) {
+            console.log("error ocurred", error);
+            res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        } else {
+            console.log('The solution is: ', result);
+            res.send({
+                "code": 200,
+                "success": "파일을 업로드하였습니다.",
+            })
+            
+        }
+    });
+});
+// --------------------------------------------------------- 녹음한 파일 업로드 업로드 ---------------------------------------------------------------
+// ---------------------------------------------------------- 업로드한 음성녹음 리스트------------------------------------------------------------------
+app.get("/AudioList/:email",(req,res,next)=>{
+    var email = req.params.email;
+    con.query('SELECT * FROM audio where email=?',[email],function(error,result,fields){
+        con.on('error',function(err){
+            console.log('[MY SQL ERROR]',err);
+        });
+
+        if(result && result.length){
+            
+                res.end(JSON.stringify(result));
+                console.log(result);
+            
+        } else {
+        }
+    })
+});
+// ---------------------------------------------------------- 업로드한 음성녹음 리스트------------------------------------------------------------------
+// ---------------------------------------------------------- 업로드한 음성녹음 수정하기------------------------------------------------------------------
+app.post('/AudioModify/',upload.single("audio"),(req,res,next) => {
+
+    let num = req.body.num;
+    let audio = req.file.filename;
+    let email = req.body.email;
+    let title = req.body.title; 
+    let content = req.body.content; 
+    let created_at = req.body.created_at;
+    let newDate = new Date();
+    var week = new Array('일','월','화','수','목','금','토');
+    let updated_time = newDate.toFormat('YYYY년 MM월 DD일 ')+ week[newDate.getDay()] + '요일 '+ newDate.toFormat('HH:MI:SS');
+
+   
+    
+    var sql = 'UPDATE audio SET email = ?, title = ?, content = ?, audio = ?, created_at = ?, updated_at = ? WHERE num = ?';
+    con.query(sql,[ email, title, content, audio, created_at, updated_time, num], function (error, result, fields) {
+        if (error) {
+            console.log("error ocurred", error);
+            res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        } else {
+            console.log('The solution is: ', result);
+            res.send({
+                "code": 200,
+                "success": "음성녹음을 수정하였습니다.",
+            })
+            
+        }
+    })
+});
+// ----------------------------------------------------------- 업로드한 음성녹음 수정하기------------------------------------------------------------------
+// ---------------------------------------------------------- 음성녹음 텍스트 수정------------------------------------------------------------------
+app.post('/AudioTextModify/',(req,res,next) => {
+
+    var post_data = req.body; // Get POST params
+    let num = post_data.num; // DB에 저장된 게시글 번호.
+    let email = post_data.email; // 음성녹음 작성자 Email
+    let title = post_data.title; // 음성녹음 제목
+    let content = post_data.content; // 음성녹음 내용
+    let audio = post_data.audio;  // 음성녹음 제목
+    let created_at = post_data.created_at; // 음성녹음 작성일
+    let newDate = new Date();
+    var week = new Array('일','월','화','수','목','금','토');
+    let Updated_time = newDate.toFormat('YYYY년 MM월 DD일 ')+ week[newDate.getDay()] + '요일 '+ newDate.toFormat('HH:MI:SS');
+    
+   
+    var sql = 'UPDATE audio SET email = ?,title = ?,content = ?,audio = ?,created_at = ?,updated_at = ? WHERE num = ?';
+    con.query(sql,[email,title,content,audio,created_at,Updated_time,num], function (error, result, fields) {
+        if (error) {
+            console.log("error ocurred", error);
+            res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        } else {
+            console.log('The solution is: ', result);
+            res.send({
+                "code": 200,
+                "success": "수정하였습니다.",
+            })
+            
+        }
+    })
+});
+// ---------------------------------------------------------- 음성녹음 텍스트 수정------------------------------------------------------------------
+// ----------------------------------------------------------- 업로드한 음성녹음 삭제------------------------------------------------------------------
+app.post('/DeleteAudio/',(req,res,next) => {
+
+    var num = req.body.num;
+   
+     
+     var sql = 'DELETE FROM audio where num=?';
+     con.query(sql,[num], function (error, result, fields) {
+         if (error) {
+             console.log("error ocurred", error);
+             res.send({
+                 "code": 400,
+                 "failed": "error ocurred"
+             })
+         } else {
+             console.log('The solution is: ', result);
+             res.send({
+                 "code": 200,
+                 "success": "음성녹음 파일을 삭제하였습니다.",
+             })
+             
+         }
+     })
+ });
+ // ---------------------------------------------------------- 업로드한 음성녹음 삭제------------------------------------------------------------------
