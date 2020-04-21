@@ -214,6 +214,7 @@ app.get("/MemoList/:email",(req,res,next)=>{
             
             
         } else {
+            res.end(JSON.stringify(result));
         }
     })
 });
@@ -366,9 +367,9 @@ app.get("/ImageList/:email",(req,res,next)=>{
         if(result && result.length){
             
                 res.end(JSON.stringify(result));
-                console.log(result);
             
         } else {
+            res.end(JSON.stringify(result));
         }
     })
 });
@@ -564,11 +565,9 @@ app.post('/VideoUpload/',upload.single('video'),(req,res,next) => {
         });
 
         if(result && result.length){
-            
-                res.end(JSON.stringify(result));
-                console.log(result);
-            
+             res.end(JSON.stringify(result));
         } else {
+            res.end(JSON.stringify(result));
         }
     })
 });
@@ -710,10 +709,10 @@ app.get("/AudioList/:email",(req,res,next)=>{
 
         if(result && result.length){
             
-                res.end(JSON.stringify(result));
-                console.log(result);
+            res.end(JSON.stringify(result));
             
         } else {
+            res.end(JSON.stringify(result));
         }
     })
 });
